@@ -32,6 +32,9 @@ jobs:
     needs:
       - ci
     uses: ./.github/workflows/build-and-push.yaml
+    permissions:
+      contents: read
+    secrets: inherit
     with:
       TAG: ${{ github.event.release.tag_name || github.sha }}
 
@@ -40,6 +43,9 @@ jobs:
     needs: 
       - build
     uses: ./.github/workflows/deploy.yaml
+    permissions:
+      contents: read
+    secrets: inherit
     with:
       ENVIRONMENT: ${{ github.event_name == 'release' && 'prod' || 'dev' }}
       TAG: ${{ github.event.release.tag_name || github.sha }}
