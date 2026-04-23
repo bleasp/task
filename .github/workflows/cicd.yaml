@@ -1,0 +1,47 @@
+name: CI/CD Workflow
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ['app/*']
+
+  push:
+    branches: [main]
+    paths: ['app/*']
+
+  release:
+    types: [published]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    permissions: 
+      contents: read
+      packages: write 
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        run: npm ci
+
+  build:
+    needs:
+      - ci
+    uses: ./.github/workflows/build-and-push.yaml
+    with:
+      TAG: ${{ github.event.release.tag_name || github.sha }}
+
+  deploy:
+    if: ${{ github.ref == 'refrs/heads/main' || startsWith(github.ref, 'refs/tags') }}
+    needs: 
+      - build
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      ENVIRONMENT: ${{ github.event_name == 'release' && 'prod' || 'dev' }}
+      TAG: ${{ github.event.release.tag_name || github.sha }}
+      
+    
