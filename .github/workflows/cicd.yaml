@@ -2,22 +2,30 @@ name: CI/CD Workflow
 
 on:
   pull_request:
-    branches: [main]
-    paths: ['app/*']
+    branches: 
+      - main
+    paths: 
+      - 'app/**'
 
   push:
-    branches: [main]
-    paths: ['app/*']
-
+    branches:
+      - main
+    paths: 
+      - 'app/**'
+  
   release:
-    types: [published]
+    types:
+      - published
+
+defaults:
+  run:
+    working-directory: app/src
+
 
 jobs:
   ci:
+    name: CI
     runs-on: ubuntu-latest
-    permissions: 
-      contents: read
-      packages: write 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -29,6 +37,7 @@ jobs:
         run: npm ci
 
   build:
+    name: Build and push docker image
     needs:
       - ci
     uses: ./.github/workflows/build-and-push.yaml
@@ -39,6 +48,7 @@ jobs:
       TAG: ${{ github.event.release.tag_name || github.sha }}
 
   deploy:
+    name: Deploy application
     if: ${{ github.ref == 'refrs/heads/main' || startsWith(github.ref, 'refs/tags') }}
     needs: 
       - build
