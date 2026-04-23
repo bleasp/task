@@ -2,15 +2,8 @@ name: CI/CD Workflow
 
 on:
   pull_request:
-    branches: [main]
-    paths: ['app/*']
-
-  push:
-    branches: [main]
-    paths: ['app/*']
-
-  release:
-    types: [published]
+    branches: 
+      - main
 
 jobs:
   ci:
