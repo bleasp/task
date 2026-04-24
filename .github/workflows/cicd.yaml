@@ -67,9 +67,15 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+      
+      - name: Terraform Format Check 
+        run: terraform fmt -check -recursive
 
       - name: Terraform Init
         run: terraform init -input=false
+
+      - name: Terraform Validate 
+        run: terraform validate
 
       - name: Generate Plan
         run: terraform plan -var-file="./environments/${{ github.event_name == 'release' && 'prod' || 'dev' }}.tfvars" -var="image_tag=${{ github.event.release.tag_name || github.sha }}" -out=tfplan
