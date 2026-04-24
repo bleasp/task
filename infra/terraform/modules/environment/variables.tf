@@ -43,3 +43,13 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "acr_id" {
+  description = "The ID of the Azure Container Registry (ACR). Used to assign AcrPull role to the Container App managed identity."
+  type        = string
+}
+
+variable "acr_login_server" {
+  description = "The login server (URL) of the Azure Container Registry (ACR), used for pulling container images."
+  type        = string
+}
