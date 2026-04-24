@@ -16,6 +16,28 @@ variable "location" {
   default     = "West Europe"
 }
 
+variable "image_tag" {
+  type        = string
+  description = "The image tag/SHA to deploy. Passed from the GitHub Actions CI/CD pipeline."
+}
+
+variable "ca_config" {
+  type = object({
+    min_replicas = number
+    max_replicas = number
+    cpu          = string
+    memory       = string
+  })
+  default = {
+    min_replicas = 1
+    max_replicas = 2
+    cpu          = 0.25
+    memory       = "0.5Gi"
+  }
+  description = "Specific configuration for the target environment container app."
+}
+
+
 variable "tags" {
   description = "A map of key-value pairs used to tag resources for organization."
   type        = map(string)
