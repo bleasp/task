@@ -3,7 +3,7 @@ const albums = [
     id: 1,
     title: "You, Me and an App ID",
     artist: "Daprize",
-    price: 56.97,
+    price: 56.96,
     image_url: "https://aka.ms/albums-daprlogo",
   },
   {
