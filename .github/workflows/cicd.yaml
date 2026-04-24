@@ -21,6 +21,13 @@ defaults:
   run:
     working-directory: app/src
 
+env:
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
+
 jobs:
   ci:
     name: CI
@@ -71,7 +78,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: tfplan-${{ github.event_name == 'release' && 'prod' || 'dev' }}
-          path: ./tfplan
+          path: tfplan
           retention-days: 1 
           overwrite: true
 
