@@ -30,9 +30,11 @@ Two supported environments:
 - Requires manual approval
 - Uses release tag as image tag
 
-Since this a simple project, I decided to have separate .tfvars files for the environments and use them by running `terraform apply -var-file=<file>`. But it was also possible to have workspaces or different tfstates.
+Since this a simple project, I decided to have separate .tfvars files for the environments with modules and use them by running `terraform apply -var-file=<file>`. 
 
 Both sharing the ACR and tfstate file.
+
+📝 A better way would be to have workspaces or different tfstates.
 
 ## Infrastructure
 With Terraform I provisioned: 
@@ -44,8 +46,12 @@ With Terraform I provisioned:
 - Container App Environment 
 - Container App 
 
+📝 I used only one module for environment, but I could've created different ones (for this case I didn't find it neccessary)
+
 ## Local Access to Internal Service
 N/A
+
+📝 I searched about this though. Found out it was possible to use ngrok as container in the same container apps environment (sharing the same vnet as the internal container) - didn't have time to try it though.
 
 
 ## Workflows and approvals
