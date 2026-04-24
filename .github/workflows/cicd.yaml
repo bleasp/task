@@ -21,7 +21,6 @@ defaults:
   run:
     working-directory: app/src
 
-
 jobs:
   ci:
     name: CI
@@ -46,6 +45,35 @@ jobs:
     secrets: inherit
     with:
       TAG: ${{ github.event.release.tag_name || github.sha }}
+  
+  terraform:
+    name: Terraform Plan
+    needs: 
+      - build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/terraform
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        run: terraform init -input=false
+
+      - name: Generate Plan
+        run: terraform plan -var-file="./environment/${{ github.event_name == 'release' && 'prod' || 'dev' }}.tfvars" -var="image_tag=${{ github.event.release.tag_name || github.sha }}" -out=tfplan
+
+      - name: Save Plan Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: tfplan-${{ github.event_name == 'release' && 'prod' || 'dev' }}
+          path: ./tfplan
+          retention-days: 1 
+          overwrite: true
 
   deploy:
     name: Deploy application
@@ -59,5 +87,6 @@ jobs:
     with:
       ENVIRONMENT: ${{ github.event_name == 'release' && 'prod' || 'dev' }}
       TAG: ${{ github.event.release.tag_name || github.sha }}
+      PLAN_ARTIFACT_NAME: ${{ format('tfplan-{0}', (github.event_name == 'release' && 'prod' || 'dev')) }}
       
     

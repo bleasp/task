@@ -3,11 +3,19 @@ on:
   workflow_call:
     inputs:
         ENVIRONMENT:
-            required: true
-            type: string
+          required: true
+          type: string
         TAG:
-            required: true
-            type: string
+          required: true
+          type: string
+        PLAN_ARTIFACT_NAME:
+          required: true
+          type: string
+          
+
+defaults:
+  run:
+    working-directory: infra/terraform
 
 jobs:
   deploy: 
@@ -15,16 +23,17 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ inputs.ENVIRONMENT }}
     steps:
-        - name: Azure Login
-          uses: azure/login@v2
-          with:
-            creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
-        - name: Deploy
-          uses: azure/container-apps-deploy-action@v1
-          with:
-            resourceGroup: rg-${{ vars.APP_NAME }}-${{ inputs.ENVIRONMENT }}
-            imageToDeploy: ${{ vars.REGISTRY }}/${{ github.repository }}:${{ inputs.TAG }}
-            containerAppName: ca-${{ vars.APP_NAME }}-${{ inputs.ENVIRONMENT }}
-            containerAppEnvironment: cae-${{ vars.APP_NAME }}-${{ inputs.ENVIRONMENT }}
-    
+       - name: Setup Terraform
+         uses: hashicorp/setup-terraform@v3
+
+       - name: Terraform Init
+         run: terraform init -input=false
+
+       - name: Download Plan Artifact
+         uses: actions/download-artifact@v4
+         with:
+          name: tfplan-${{ inputs.ENVIRONMENT }}
+          path: ./tfplan
+
+       - name: Terraform Apply
+         run: terraform apply -auto-approve -var-file="./environment/${{ inputs.ENVIRONMENT }}.tfvars" -var="image_tag=${{ inputs.TAG }}"
