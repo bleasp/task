@@ -15,6 +15,11 @@ variable "location" {
   type        = string
   default     = "West Europe"
 }
+variable "image_tag" {
+  type        = string
+  description = "The image tag/SHA to deploy. Passed from the GitHub Actions CI/CD pipeline."
+}
+
 
 variable "tags" {
   description = "A map of key-value pairs used to tag resources for organization."
