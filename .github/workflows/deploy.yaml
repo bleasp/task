@@ -17,12 +17,22 @@ defaults:
   run:
     working-directory: infra/terraform
 
+env:
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_ACCESS_KEY: ${{ secrets.ARM_ACCESS_KEY }}
+
 jobs:
   deploy: 
     name: Deploy ${{ vars.APP_NAME }} to ${{ inputs.ENVIRONMENT }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.ENVIRONMENT }}
     steps:
+       - name: Checkout repository
+         uses: actions/checkout@v3
+
        - name: Setup Terraform
          uses: hashicorp/setup-terraform@v3
 
