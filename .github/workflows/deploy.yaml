@@ -36,4 +36,4 @@ jobs:
           path: ./tfplan
 
        - name: Terraform Apply
-         run: terraform apply -auto-approve -var-file="./environment/${{ inputs.ENVIRONMENT }}.tfvars" -var="image_tag=${{ inputs.TAG }}"
+         run: terraform apply -auto-approve -var-file="./environments/${{ inputs.ENVIRONMENT }}.tfvars" -var="image_tag=${{ inputs.TAG }}"

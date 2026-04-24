@@ -65,7 +65,7 @@ jobs:
         run: terraform init -input=false
 
       - name: Generate Plan
-        run: terraform plan -var-file="./environment/${{ github.event_name == 'release' && 'prod' || 'dev' }}.tfvars" -var="image_tag=${{ github.event.release.tag_name || github.sha }}" -out=tfplan
+        run: terraform plan -var-file="./environments/${{ github.event_name == 'release' && 'prod' || 'dev' }}.tfvars" -var="image_tag=${{ github.event.release.tag_name || github.sha }}" -out=tfplan
 
       - name: Save Plan Artifact
         uses: actions/upload-artifact@v4
